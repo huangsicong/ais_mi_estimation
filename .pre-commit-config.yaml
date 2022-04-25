@@ -1,0 +1,21 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-docstring-first
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: [--fix=lf]
+  - repo: https://github.com/pre-commit/mirrors-yapf
+    rev: v0.30.0 # Use the sha / tag you want to point at
+    hooks:
+      - id: yapf
+        args:
+          [
+            "-ri",
+            "{based_on_style: google, indent_width: 4, column_limit: 80}",
+            ".",
+          ]
