@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # Auto-generated from hparams
 #SBATCH --partition=p100
