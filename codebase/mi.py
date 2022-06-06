@@ -31,7 +31,6 @@ if args.hparam_set:
     hparams = get_hparams(args.hparam_set)
 if args.hparam_from_pickle:
     hparams = get_hparams_from_pickle(args.hparam_from_pickle)
-    print(f'hparams {hparams}')
 
 hparams.overwrite = args.overwrite
 

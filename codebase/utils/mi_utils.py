@@ -75,27 +75,7 @@ def check_batch_size(batch_size, n_batch):
 def mean_confidence_interval(data, confidence=0.95):
     """ https://stackoverflow.com/questions/15033511/compute-a-confidence-interval-from-sample-data """
 
-    # all_bins = np.linspace(min_scale, max_scale, 50)
-    # fig, ax = plt.subplots()
-    # ax.hist(indist_array, all_bins, alpha=0.5, label='In-distribution')
-
-    # ax.legend(loc='upper right')
-    # ax.set_title(f'{model_name} \n {indist_name} vs {ood_name}')
-    # ax.set_xlabel(str(axisname))
-    # ax.set_ylabel('Amount')
-    # ax.set_ylim(0, y_limit)
-    # axisname = axisname.replace(" ", "_")
-    # fig_path = os.path.join(save_dir, f"{model_name}_{axisname}_{append}.png")
-    # fig.savefig(fig_path)
-    # plt.clf()
-    # plt.cla()
-    # plt.close('all')
-
     a = 1.0 * np.array(data)
-
-    note_taking(f"np.min(data): {np.min(data)}, np.max(data): {np.max(data)}")
-    note_taking(f"CI batches: {data}")
-
     n = len(a)
     m, se = np.mean(a), stats.sem(a)
     h = se * stats.t.ppf((1 + confidence) / 2., n - 1)
@@ -117,11 +97,9 @@ def compute_CI(data, n_batch):
     data: [B]
     
     """
-    note_taking(
-        f"data point: data.min(): {data.min()}, data.max(): {data.max()}")
+
     total = data.shape[0]
     batch_size = total // n_batch
-    # n_batch = total // batch_size
     assert n_batch * batch_size == total, "Please make sure the number of total data points is an integer multiple of the batch size for CI."
     start = 0
     end = 0 + batch_size

@@ -43,7 +43,6 @@ class AIS_core(object):
 
     def update_prior_dist(self, prior_dist_obj):
         self.prior_dist_obj = prior_dist_obj
-        print("updating prior_dist_obj:", prior_dist_obj)
 
     def anneal_dist(self, z, data, t):
         if "fid" in self.task_params.target_dist:

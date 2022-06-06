@@ -4,7 +4,7 @@ from torch.distributions import Normal
 import numpy as np
 import torch
 from ..utils.vae_utils import log_normal_likelihood
-from ..utils.experiment_utils import note_taking, save_recon
+from ..utils.experiment_utils import note_taking, save_recon, get_hparams_from_pickle
 from ..registry import get_vp_model, get_hparams
 from tqdm import tqdm
 from torch import nn
@@ -39,16 +39,15 @@ def load_encoder(hparams):
 
 
 def load_q(hparams):
-    q_hparam = get_hparams(hparams.load_q_hparam)
+    q_hparams_path = f"./codebase/hparams/mi_release/{hparams.load_q_hparam}.p"
+    q_hparam = get_hparams_from_pickle(q_hparams_path)
     q_dir = pjoin(q_hparam.output_root_dir, "result_loadable",
                   hparams.load_q_hparam)
 
     q_path = pjoin(q_dir, "q.pt")
-    # std_path = pjoin(hparams.q_hparam,"result_loadable", "std.pt")
     v_mean_cpu, std_cpu = torch.load(q_path)
     v_mean = v_mean_cpu.to(hparams.device)
     std = std_cpu.to(hparams.device)
-    # std = torch.load(std_path)
     note_taking(f"loaded q from path {q_path}")
     return v_mean, std
 
@@ -111,12 +110,7 @@ def compute_vp_reverse(model, data, hparams, z_exact=None):
 
     # This step is not necessary, but it is here for mainting the RNG states for reproducibility
     _, elbo, _, _, _, _, _ = temp_model(data, num_iwae=1, exact_kl=True)
-
     v_mean, v_logvar = temp_model.enc(data)
-
-    note_taking(
-        f"v_logvar.shape={v_logvar.shape}, v_logvar.sum(1).shape={v_logvar.sum(1).shape}"
-    )
     wandb.log({"logvar_sum_avg": v_logvar.sum(1).mean()})
 
     std = torch.ones(v_mean.size()).to(hparams.device).mul(
